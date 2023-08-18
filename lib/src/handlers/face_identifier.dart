@@ -26,25 +26,15 @@ class FaceIdentifier {
         InputImageFormatValue.fromRawValue(cameraImage.format.raw) ??
             InputImageFormat.nv21;
 
-    final planeData = cameraImage.planes.map(
-      (Plane plane) {
-        return InputImagePlaneMetadata(
-          bytesPerRow: plane.bytesPerRow,
-          height: plane.height,
-          width: plane.width,
-        );
-      },
-    ).toList();
-
-    final inputImageData = InputImageData(
+    final inputImageData = InputImageMetadata(
       size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
+      rotation: imageRotation,
+      format: inputImageFormat,
+      bytesPerRow: cameraImage.planes[0].bytesPerRow,
     );
 
     final visionImage =
-        InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+        InputImage.fromBytes(bytes: bytes, metadata: inputImageData);
     DetectedFace? result;
     final face = await _detectFace(visionImage: visionImage);
     if (face != null) {
