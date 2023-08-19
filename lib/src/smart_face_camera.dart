@@ -25,7 +25,7 @@ class SmartFaceCamera extends StatefulWidget {
   final String? message;
   final TextStyle messageStyle;
   final CameraOrientation? orientation;
-  final void Function(File? image) onCapture;
+  final void Function(File? image, DetectedFace? detectedFace) onCapture;
   final void Function(Face? face)? onFaceDetected;
   final Widget? captureControlIcon;
   final Widget? lensControlIcon;
@@ -381,7 +381,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
         takePicture().then((XFile? file) {
           /// Return image callback
           if (file != null) {
-            widget.onCapture(File(file.path));
+            widget.onCapture(File(file.path),_detectedFace);
           }
 
           /// Resume image stream after 2 seconds of capture
