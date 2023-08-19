@@ -30,7 +30,7 @@ class FaceIdentifier {
       size: imageSize,
       rotation: imageRotation,
       format: inputImageFormat,
-      bytesPerRow: cameraImage.planes[0].bytesPerRow,
+      bytesPerRow: cameraImage.planes.isNotEmpty ? cameraImage.planes[0].bytesPerRow:0,
     );
 
     final visionImage =
@@ -67,12 +67,12 @@ class FaceIdentifier {
       detectedFace = face;
 
       // Head is rotated to the right rotY degrees
-      if (face.headEulerAngleY! > 2 || face.headEulerAngleY! < -2) {
+      if (face.headEulerAngleY! > 6 || face.headEulerAngleY! < -6) {
         wellPositioned = false;
       }
 
       // Head is tilted sideways rotZ degrees
-      if (face.headEulerAngleZ! > 2 || face.headEulerAngleZ! < -2) {
+      if (face.headEulerAngleZ! > 6 || face.headEulerAngleZ! < -6) {
         wellPositioned = false;
       }
 
