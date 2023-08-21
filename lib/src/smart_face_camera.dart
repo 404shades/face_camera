@@ -66,6 +66,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
   CameraController? _controller;
 
   bool _alreadyCheckingImage = false;
+  bool _imageCapturing = false;
 
   DetectedFace? _detectedFace;
 
@@ -291,7 +292,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
       icon: widget.captureControlIcon ??
           CircleAvatar(
               radius: 70,
-              child: cameraController?.value.isTakingPicture ?? false
+              child: _imageCapturing
                   ? CircularProgressIndicator()
                   : Padding(
                       padding: EdgeInsets.all(8.0),
@@ -381,6 +382,9 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
   void _onTakePictureButtonPressed() async {
     final CameraController? cameraController = _controller;
     try {
+      setState(() {
+        _imageCapturing = true;
+      });
       cameraController!.stopImageStream().whenComplete(() async {
         await Future.delayed(const Duration(milliseconds: 500));
         takePicture().then((XFile? file) {
@@ -415,6 +419,9 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
 
     if (cameraController.value.isTakingPicture) {
       // A capture is already pending, do nothing.
+      setState(() {
+        _imageCapturing = true;
+      });
       return null;
     }
 
@@ -424,6 +431,10 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
     } on CameraException catch (e) {
       _showCameraException(e);
       return null;
+    } finally {
+      setState(() {
+        _imageCapturing = false;
+      });
     }
   }
 
