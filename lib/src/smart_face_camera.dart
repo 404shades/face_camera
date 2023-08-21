@@ -203,7 +203,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
                     child: Stack(
                       fit: StackFit.expand,
                       children: <Widget>[
-                        if (widget.shouldFaceDetect) _cameraDisplayWidget(),
+                        _cameraDisplayWidget(),
                         if (_detectedFace != null &&
                             widget.shouldFaceDetect) ...[
                           SizedBox(
@@ -269,7 +269,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
         if (widget.messageBuilder != null) {
           return widget.messageBuilder!.call(context, _detectedFace);
         }
-        if (widget.message != null) {
+        if (widget.message != null && widget.shouldFaceDetect) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 55, vertical: 15),
             child: Text(widget.message!,
