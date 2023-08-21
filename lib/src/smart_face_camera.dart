@@ -387,26 +387,41 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
       setState(() {
         _imageCapturing = true;
       });
-      cameraController!.stopImageStream().whenComplete(() async {
-        await Future.delayed(const Duration(milliseconds: 500));
-        takePicture().then((XFile? file) {
-          /// Return image callback
-          if (file != null) {
-            widget.onCapture(File(file.path), _detectedFace);
-          }
-
-          /// Resume image stream after 2 seconds of capture
-          Future.delayed(const Duration(seconds: 2)).whenComplete(() {
-            if (mounted && cameraController.value.isInitialized) {
-              try {
-                _startImageStream();
-              } catch (e) {
-                logError(e.toString());
-              }
-            }
+      takePicture().then((XFile? file) {
+        if (mounted) {
+          setState(() {
+            _imageCapturing = false;
           });
-        });
+        }
+
+        if (file != null) {
+          widget.onCapture(File(file.path), _detectedFace);
+        }
+
+        if (cameraController != null && cameraController.value.isInitialized) {
+          cameraController.dispose();
+        }
       });
+      // cameraController!.stopImageStream().whenComplete(() async {
+      //   await Future.delayed(const Duration(milliseconds: 500));
+      //   takePicture().then((XFile? file) {
+      //     /// Return image callback
+      //     if (file != null) {
+      //       widget.onCapture(File(file.path), _detectedFace);
+      //     }
+
+      //     /// Resume image stream after 2 seconds of capture
+      //     Future.delayed(const Duration(seconds: 2)).whenComplete(() {
+      //       if (mounted && cameraController.value.isInitialized) {
+      //         try {
+      //           _startImageStream();
+      //         } catch (e) {
+      //           logError(e.toString());
+      //         }
+      //       }
+      //     });
+      //   });
+      // });
     } catch (e) {
       logError(e.toString());
     }
