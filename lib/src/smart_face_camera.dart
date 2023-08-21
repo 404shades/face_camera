@@ -293,7 +293,9 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
           CircleAvatar(
               radius: 70,
               child: _imageCapturing
-                  ? CircularProgressIndicator()
+                  ? CircularProgressIndicator(
+                      color: Colors.white,
+                    )
                   : Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Icon(Icons.camera_alt, size: 35),
