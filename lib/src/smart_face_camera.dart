@@ -29,6 +29,7 @@ class SmartFaceCamera extends StatefulWidget {
   final void Function(Face? face)? onFaceDetected;
   final Widget? captureControlIcon;
   final Widget? lensControlIcon;
+  final bool shouldFaceDetect;
   final FlashControlBuilder? flashControlBuilder;
   final MessageBuilder? messageBuilder;
 
@@ -41,6 +42,7 @@ class SmartFaceCamera extends StatefulWidget {
       this.showCaptureControl = true,
       this.showFlashControl = true,
       this.showCameraLensControl = true,
+      this.shouldFaceDetect = true,
       this.message,
       this.defaultFlashMode = CameraFlashMode.auto,
       this.orientation = CameraOrientation.portraitUp,
@@ -202,7 +204,8 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
                       fit: StackFit.expand,
                       children: <Widget>[
                         _cameraDisplayWidget(),
-                        if (_detectedFace != null) ...[
+                        if (_detectedFace != null &&
+                            widget.shouldFaceDetect) ...[
                           SizedBox(
                               width: cameraController.value.previewSize!.width,
                               height:
@@ -381,7 +384,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
         takePicture().then((XFile? file) {
           /// Return image callback
           if (file != null) {
-            widget.onCapture(File(file.path),_detectedFace);
+            widget.onCapture(File(file.path), _detectedFace);
           }
 
           /// Resume image stream after 2 seconds of capture
@@ -429,7 +432,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
 
   void _startImageStream() {
     final CameraController? cameraController = _controller;
-    if (cameraController != null) {
+    if (cameraController != null && widget.shouldFaceDetect) {
       cameraController.startImageStream(_processImage);
     }
   }
