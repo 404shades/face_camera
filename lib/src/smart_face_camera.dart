@@ -203,7 +203,7 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
                     child: Stack(
                       fit: StackFit.expand,
                       children: <Widget>[
-                        _cameraDisplayWidget(),
+                        if (widget.shouldFaceDetect) _cameraDisplayWidget(),
                         if (_detectedFace != null &&
                             widget.shouldFaceDetect) ...[
                           SizedBox(
@@ -289,12 +289,14 @@ class _SmartFaceCameraState extends State<SmartFaceCamera>
     return IconButton(
       iconSize: 70,
       icon: widget.captureControlIcon ??
-          const CircleAvatar(
+          CircleAvatar(
               radius: 70,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.camera_alt, size: 35),
-              )),
+              child: cameraController?.value.isTakingPicture ?? false
+                  ? CircularProgressIndicator()
+                  : Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(Icons.camera_alt, size: 35),
+                    )),
       onPressed:
           cameraController != null && cameraController.value.isInitialized
               ? _onTakePictureButtonPressed
